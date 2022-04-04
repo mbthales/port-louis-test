@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacts List</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lustria&family=Mulish:wght@300&display=swap');
+
+    :root {
+      --primary-color-900: #0D2F47;
+      --neutral-color-100: #E4EFF7;
+      --neutral-color-300: #9DB8CC;
+      --neutral-color-700: #112636;
+      --neutral-color-900: #010508;
+      --accent-color-100: #F2797C;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      line-height: 1.5;
+      border: none;
+      list-style: none;
+      text-decoration: none;
+    }
+
+    html {
+      background: radial-gradient(306.61% 145.28% at -20.93% -45.28%, #3A5161 0%, rgba(153, 165, 174, 0.515625) 21.87%, rgba(199, 205, 210, 0.286173) 51.04%, rgba(255, 255, 255, 0) 100%);
+      font-size: 16px;
+      font-family: 'Mulish', sans-serif;
+      color: var(--primary-color-900);
+      min-height: 100%;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    svg {
+      pointer-events: none;
+    }
+
+    [v-cloak] {
+      display: none;
+    }
+
+    .title {
+      font-size: 3rem;
+      text-align: center;
+      font-family: 'Lustria', serif;
+      padding-top: 60px;
+    }
+
+    .contacts-list {
+      display: flex;
+      align-items: center;
+      margin-top: 75px;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .contacts-list li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .contact-buttons-wrapper {
+      display: flex;
+    }
+
+    .btn-open-add-modal {
+      height: 70px;
+      width: 70px;
+      border-radius: 50%;
+      position: fixed;
+      right: 40px;
+      bottom: 40px;
+      background-color: var(--accent-color-100);
+      filter: drop-shadow(0px 5px 3px rgba(242, 121, 124, 0.32));
+    }
+
+    .btn-open-add-modal:hover {
+      background-color: var(--primary-color-900);
+      cursor: pointer;
+      filter: drop-shadow(0px 5px 3px rgba(13, 47, 71, 0.32));
+    }
+
+    .btn-open-add-modal:hover path {
+      fill: var(--neutral-color-100);
+    }
+
+    .btn-open-edit-delete-modal {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      margin-right: 6px;
+    }
+
+    .btn-open-edit-delete-modal:hover path {
+      fill: var(--accent-color-100);
+      cursor: pointer;
+    }
+
+    .container-modals {
+      background-color: #01050870;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .modal {
+      width: 90%;
+      max-width: 700px;
+      height: 500px;
+      background-color: var(--neutral-color-700);
+      position: fixed;
+      top: 50%;
+      right: 50%;
+      transform: translate(50%, -50%);
+      filter: drop-shadow(0px 5px 3px rgba(17, 38, 54, 0.32));
+      border-radius: 8px;
+    }
+
+    .modal h2 {
+      font-size: 2rem;
+      font-family: 'Lustria', serif;
+      text-align: center;
+      padding-top: 50px;
+      color: var(--neutral-color-100);
+    }
+
+    .modal form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .modal input,
+    .modal button {
+      background-color: var(--neutral-color-100);
+      color: var(--neutral-color-900);
+      font-size: 1rem;
+      filter: drop-shadow(0px 5px 15px rgba(228, 239, 247, 0.10));
+    }
+
+    .modal input {
+      height: 40px;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 5px;
+      display: block;
+      width: 100%;
+    }
+
+    .modal input:focus {
+      outline: 2px solid var(--accent-color-100);
+    }
+
+    .modal input::placeholder {
+      color: var(--neutral-color-300);
+    }
+
+    .modal button {
+      height: 40px;
+      width: 50%;
+      border-radius: 5px;
+      margin-top: 30px;
+      max-width: 170px;
+    }
+
+    .modal button:hover {
+      background-color: var(--accent-color-100);
+      filter: drop-shadow(0px 5px 15px rgba(242, 121, 124, 0.10))
+    }
+
+    .msg-contacts-list-empty {
+      margin-top: 300px;
+      text-align: center;
+    }
+
+    .input-wrapper {
+      width: 80%;
+      max-width: 330px;
+    }
+
+    .input-wrapper label {
+      float: left;
+      color: var(--neutral-color-100);
+      width: 100%;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .input-wrapper span {
+      font-size: 0.8rem;
+    }
+
+    .btn-close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: var(--neutral-color-100);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .btn-close-modal:hover {
+      color: var(--accent-color-100);
+    }
+
+    .delete-contact-container {
+      display: flex;
+      flex-direction: column;
+      color: var(--neutral-color-100);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .delete-contact-container p {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .mark-ddd {
+      background-color: var(--primary-color-900);
+      color: var(--neutral-color-100)
+    }
+
+    .mark-ddd path {
+      fill: var(--neutral-color-100);
+    }
+
+    @media (min-width: 768px) {
+      html {
+        font-size: 18px;
+      }
+
+      .contacts-list li {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 30px
+      }
+
+      .modal {
+        height: 550px;
+      }
+
+      .modal button {
+        height: 50px;
+      }
+
+      .input-wrapper input {
+        height: 50px;
+      }
+
+      .btn-open-edit-delete-modal svg {
+        height: 28px;
+        width: 28px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      html {
+        font-size: 20px;
+      }
+
+      .btn-open-add-modal {
+        height: 80px;
+        width: 80px;
+      }
+
+      .msg-contacts-list-empty {
+        margin-top: 350px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <main v-cloak>
+      <h1 class="title">Contacts</h1>
+      <div>
+        <ul class="contacts-list" v-if="contacts.length > 0">
+          <li v-for="contact in contacts" :class="checkContactDDD(contact.num)">
+            <p>{{contact.name}}</p>
+            <p>{{contact.num}}</p>
+            <div class="contact-buttons-wrapper">
+              <button @click="(e) => handleModals(e, contact)" id="btn-active-edit-modal"
+                class="btn-open-edit-delete-modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M18.6666 20H3.99996V5.33333H12.8133L14.1466 4H3.99996C3.64634 4 3.3072 4.14048 3.05715 4.39052C2.8071 4.64057 2.66663 4.97971 2.66663 5.33333V20C2.66663 20.3536 2.8071 20.6928 3.05715 20.9428C3.3072 21.1929 3.64634 21.3333 3.99996 21.3333H18.6666C19.0202 21.3333 19.3594 21.1929 19.6094 20.9428C19.8595 20.6928 20 20.3536 20 20V10L18.6666 11.3333V20Z"
+                    fill="#0D2F47" />
+                  <path
+                    d="M22.3533 3.89335L20.1067 1.64668C20.007 1.5467 19.8885 1.46738 19.7581 1.41325C19.6277 1.35913 19.4879 1.33127 19.3467 1.33127C19.2055 1.33127 19.0656 1.35913 18.9352 1.41325C18.8048 1.46738 18.6864 1.5467 18.5867 1.64668L9.44666 10.84L8.70666 14.0467C8.67513 14.2021 8.67845 14.3626 8.71636 14.5166C8.75428 14.6706 8.82586 14.8143 8.92594 14.9374C9.02603 15.0604 9.15214 15.1597 9.2952 15.2282C9.43826 15.2967 9.59472 15.3326 9.75333 15.3333C9.8353 15.3424 9.91802 15.3424 9.99999 15.3333L13.2333 14.62L22.3533 5.41335C22.4533 5.31364 22.5326 5.19519 22.5868 5.06477C22.6409 4.93436 22.6687 4.79455 22.6687 4.65335C22.6687 4.51215 22.6409 4.37234 22.5868 4.24192C22.5326 4.11151 22.4533 3.99305 22.3533 3.89335ZM12.54 13.3867L10.1 13.9267L10.6667 11.5067L17.5467 4.58001L19.4267 6.46001L12.54 13.3867ZM20.18 5.70668L18.3 3.82668L19.3333 2.77335L21.2267 4.66668L20.18 5.70668Z"
+                    fill="#0D2F47" />
+                </svg>
+              </button>
+              <button @click="(e) => handleModals(e, contact)" id="btn-active-delete-modal"
+                class="btn-open-edit-delete-modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.14288 9H10.6429V18H9.14288V9ZM13.6429 9H15.1429V18H13.6429V9Z" fill="#0D2F47" />
+                  <path
+                    d="M3.14288 4.5V6H4.64288V21C4.64288 21.3978 4.80092 21.7794 5.08222 22.0607C5.36353 22.342 5.74506 22.5 6.14288 22.5H18.1429C18.5407 22.5 18.9222 22.342 19.2035 22.0607C19.4848 21.7794 19.6429 21.3978 19.6429 21V6H21.1429V4.5H3.14288ZM6.14288 21V6H18.1429V21H6.14288ZM9.14288 1.5H15.1429V3H9.14288V1.5Z"
+                    fill="#0D2F47" />
+                </svg>
+              </button>
+            </div>
+          </li>
+        </ul>
+        <p v-else class="msg-contacts-list-empty">Você ainda não possui nenhum contato salvo.</p>
+      </div>
+      <button @click="(e) => handleModals(e)" class="btn-open-add-modal" id="btn-active-add-modal">
+        <svg width="29" height="31" viewBox="0 0 29 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M20.4141 20.4178C21.3267 19.9275 22.3714 19.6484 23.4839 19.6484H23.4877C23.6008 19.6484 23.6536 19.5127 23.5707 19.4372C22.4137 18.3989 21.092 17.5603 19.6598 16.9557C19.6447 16.9482 19.6297 16.9444 19.6146 16.9369C21.9565 15.236 23.4801 12.4717 23.4801 9.3528C23.4801 4.18613 19.3016 0 14.1462 0C8.99085 0 4.81603 4.18613 4.81603 9.3528C4.81603 12.4717 6.33963 15.236 8.68537 16.9369C8.67029 16.9444 8.6552 16.9482 8.64012 16.9557C6.95435 17.6685 5.44207 18.6905 4.14097 19.9954C2.84739 21.2866 1.81753 22.8173 1.10885 24.5021C0.411591 26.1519 0.0352861 27.9195 9.43049e-05 29.7102C-0.000912271 29.7505 0.00614769 29.7905 0.0208584 29.828C0.0355691 29.8655 0.0576327 29.8996 0.0857493 29.9284C0.113866 29.9573 0.147467 29.9802 0.184571 29.9958C0.221676 30.0114 0.261534 30.0195 0.301797 30.0195H2.5608C2.72297 30.0195 2.85873 29.8875 2.8625 29.7253C2.93793 26.8139 4.10326 24.0872 6.16615 22.0206C8.29693 19.8822 11.1329 18.7056 14.15 18.7056C16.2883 18.7056 18.3399 19.2977 20.1086 20.4064C20.154 20.435 20.2062 20.4511 20.2598 20.4531C20.3135 20.455 20.3667 20.4429 20.4141 20.4178V20.4178ZM14.15 15.8394C12.4227 15.8394 10.7973 15.1644 9.57163 13.9387C8.96858 13.3372 8.4905 12.6223 8.16494 11.8353C7.83937 11.0482 7.67275 10.2045 7.67467 9.3528C7.67467 7.62178 8.34973 5.99258 9.57163 4.76691C10.7935 3.54124 12.419 2.86618 14.15 2.86618C15.881 2.86618 17.5026 3.54124 18.7283 4.76691C19.3314 5.3684 19.8094 6.08326 20.135 6.87031C20.4606 7.65737 20.6272 8.50107 20.6253 9.3528C20.6253 11.0838 19.9502 12.713 18.7283 13.9387C17.5026 15.1644 15.8772 15.8394 14.15 15.8394ZM28.0208 24.8151H24.8529V21.6472C24.8529 21.4813 24.7171 21.3455 24.5512 21.3455H22.4393C22.2733 21.3455 22.1376 21.4813 22.1376 21.6472V24.8151H18.9697C18.8037 24.8151 18.668 24.9509 18.668 25.1168V27.2287C18.668 27.3946 18.8037 27.5304 18.9697 27.5304H22.1376V30.6983C22.1376 30.8642 22.2733 31 22.4393 31H24.5512C24.7171 31 24.8529 30.8642 24.8529 30.6983V27.5304H28.0208C28.1867 27.5304 28.3225 27.3946 28.3225 27.2287V25.1168C28.3225 24.9509 28.1867 24.8151 28.0208 24.8151Z"
+            fill="#010508" />
+        </svg>
+      </button>
+      <div
+        v-if="modals.addContactModalHasActive || modals.editContactModalHasActive || modals.deleteContactModalHasActive"
+        @click="(e) => handleModals(e)" class="container-modals" id="out-modal">
+        <div v-if="modals.addContactModalHasActive || modals.editContactModalHasActive"
+          class="modal add-contact-container">
+          <span class="btn-close-modal" id="btn-close-modal" @click="(e) => handleModals(e)">X</span>
+          <h2 v-if="modals.addContactModalHasActive">Novo Contato</h2>
+          <h2 v-else>Editar {{contactSelect.name}}</h2>
+          <form>
+            <div class="input-wrapper">
+              <label>
+                Nome*
+                <input v-model="inputs.inputContactName.value" type="text" placeholder="Frederico Alberto">
+                <span v-if="inputs.inputContactName.error">{{inputs.inputContactName.error}}</span>
+              </label>
+            </div>
+            <div class="input-wrapper">
+              <label>
+                Telefone*
+                <input @input="(e) => checkIfContactNumContainWord(e)" v-model="inputs.inputContactNum.value"
+                  type="text" placeholder="(xx) xxxx-xxxx">
+                <span v-if="inputs.inputContactNum.error">{{inputs.inputContactNum.error}}</span>
+              </label>
+            </div>
+            <button v-if="modals.addContactModalHasActive" @click="addContact" type="button">Adicionar</button>
+            <button v-else @click="editContact" type="button">Editar</button>
+          </form>
+        </div>
+        <div v-else class="modal delete-contact-container">
+          <span class="btn-close-modal" id="btn-close-modal" @click="(e) => handleModals(e)">X</span>
+          <p>
+            Tem certeza que você quer
+            deletar {{contactSelect?.name }}?
+            A operação não pode ser desfeita.
+          </p>
+          <button @click="deleteContact">Delete</button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@2.6.5/dist/quasar.umd.prod.js"></script>
+  <script>
+    const app = Vue.createApp({
+      setup() {
+        const contacts = Vue.ref(JSON.parse(localStorage.getItem("contacts")) || []);
+        const contactSelect = Vue.ref(null);
+        const inputs = Vue.ref({
+          inputContactName: {
+            value: "",
+            error: null
+          },
+          inputContactNum: {
+            value: "",
+            error: null,
+          }
+        });
+        const modals = Vue.ref({
+          addContactModalHasActive: null,
+          editContactModalHasActive: null,
+          deleteContactModalHasActive: null
+        });
+
+        const generateId = () => {
+          const id = Math.random()
+            .toString(36)
+            .substr(2, 6);
+
+          const checkIfIdExists = createdId => contacts.value.some(({ id }) => id === createdId);
+
+          return checkIfIdExists(id) ? generateId() : id;
+        }
+
+        const cleanContactsInputs = () => {
+          inputs.value.inputContactName.error = null;
+          inputs.value.inputContactNum.error = null;
+          inputs.value.inputContactName.value = "";
+          inputs.value.inputContactNum.value = "";
+        }
+
+        const checkContactsInputs = () => {
+          const contactNameError = inputs.value.inputContactName.error;
+          const contactNumError = inputs.value.inputContactNum.error;
+          const contactNameValue = inputs.value.inputContactName.value;
+          const contactNumValue = inputs.value.inputContactNum.value;
+          const contactNameMask = new RegExp(/^(\w{3,20})(\s)(\w{3,20})$/g);
+          const contactNumMask = new RegExp(/^(\(\d{2}\))(\s)(\d{4})(-)(\d{4})$/g);
+          const checkContactName = contactNameMask.test(contactNameValue);
+          const checkContactNum = contactNumMask.test(contactNumValue);
+
+          if (contactNameValue.length > 0) {
+            if (checkContactName) {
+              changeContactsInputsErrors("inputContactName", null);
+            } else {
+              const msg = "Seu nome deve conter duas palavras de no mínimo 3 letras."
+              changeContactsInputsErrors("inputContactName", msg);
+            }
+          } else {
+            const msg = "O nome é necessário."
+            changeContactsInputsErrors("inputContactName", msg);
+          }
+
+          if (contactNumValue.length > 0) {
+            if (checkContactNum) {
+              changeContactsInputsErrors("inputContactNum", null);
+            } else {
+              const msg = "Seu número de telefone deve estar no formato (xx) xxxx-xxxx."
+              changeContactsInputsErrors("inputContactNum", msg);
+            }
+          } else {
+            const msg = "O número de telefone é necessário."
+            changeContactsInputsErrors("inputContactNum", msg);
+          }
+
+          return !inputs.value.inputContactName.error && !inputs.value.inputContactNum.error ? true : false;
+        }
+
+        const changeContactsInputsErrors = (input, error) => {
+          inputs.value[input].error = error;
+        }
+
+        const checkIfContactNumContainWord = (e) => {
+          const stringContainWordMask = new RegExp(/^[^a-zA-Z,/$@]+$/g);
+          const inputValue = e.target.value;
+          const checkIfInputContainWord = stringContainWordMask.test(inputValue);
+
+          if (!checkIfInputContainWord) {
+            const msg = "Letra não é permitido."
+            changeContactsInputsErrors("inputContactNum", msg);
+          }
+        }
+
+        const checkContactDDD = num => {
+          const contactDDD = num.substr(1, 2);
+
+          return contactDDD === "11" ? "mark-ddd" : "";
+        }
+
+        const addContact = () => {
+          if (checkContactsInputs()) {
+            contacts.value.push({
+              id: generateId(),
+              name: inputs.value.inputContactName.value,
+              num: inputs.value.inputContactNum.value
+            });
+
+            localStorage.setItem("contacts", JSON.stringify(contacts.value));
+
+            modals.value.addContactModalHasActive = null;
+
+            cleanContactsInputs();
+          }
+        }
+
+        const editContact = () => {
+          if (checkContactsInputs()) {
+            contacts.value = contacts.value.map(contact => {
+              const id = contact.id;
+
+              if (id === contactSelect.value.id) {
+                return {
+                  id,
+                  name: inputs.value.inputContactName.value,
+                  num: inputs.value.inputContactNum.value
+                };
+              }
+
+              return contact;
+            });
+
+            localStorage.setItem("contacts", JSON.stringify(contacts.value));
+
+            modals.value.editContactModalHasActive = null;
+
+            cleanContactsInputs();
+          }
+        }
+
+        const deleteContact = () => {
+          const selectContactId = contactSelect.value.id;
+
+          contacts.value = contacts.value.filter(({ id }) => id !== selectContactId);
+
+          localStorage.setItem("contacts", JSON.stringify(contacts.value));
+
+          modals.value.deleteContactModalHasActive = null;
+          contactSelect.value = null;
+        }
+
+        const handleModals = (e, contact) => {
+          const modalId = e.target.id;
+
+          const changeContactsInputs = () => {
+            contactSelect.value = contact;
+            inputs.value.inputContactName.value = contact.name;
+            inputs.value.inputContactNum.value = contact.num;
+          }
+          const changeModalsState = values => {
+            modals.value.addContactModalHasActive = values[0];
+            modals.value.editContactModalHasActive = values[1];
+            modals.value.deleteContactModalHasActive = values[2];
+          }
+          const closeModal = () => {
+            contactSelect.value = null;
+            changeModalsState([null, null, null]);
+            cleanContactsInputs();
+          }
+
+          if (modalId === "btn-active-add-modal") {
+            changeModalsState([true, null, null]);
+          } else if (modalId === "btn-active-edit-modal") {
+            changeModalsState([null, true, null]);
+            changeContactsInputs();
+          } else if (modalId === "btn-active-delete-modal") {
+            contactSelect.value = contact;
+            changeModalsState([null, null, true]);
+          } else if (modalId === "out-modal" || modalId === "btn-close-modal") {
+            closeModal();
+          }
+        }
+
+        return {
+          contacts,
+          contactSelect,
+          inputs,
+          modals,
+          checkIfContactNumContainWord,
+          checkContactDDD,
+          addContact,
+          editContact,
+          deleteContact,
+          handleModals
+        }
+      }
+    })
+
+    app.use(Quasar)
+    app.mount('#app')
+  </script>
+</body>
+
+</html>
